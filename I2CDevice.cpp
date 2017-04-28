@@ -40,7 +40,7 @@ namespace rpiIO{
         }
         
         isOpen = true;
-        
+        return 0;
     }
     
     void I2CDevice::close()
