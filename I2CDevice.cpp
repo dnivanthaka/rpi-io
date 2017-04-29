@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <linux/i2c-dev.h>
+#include <sys/ioctl.h>
 
 #include "I2CDevice.h"
 
@@ -145,7 +146,14 @@ namespace rpiIO{
     
     void I2CDevice::dumpRegisters(uint8_t startReg, uint16_t len)
     {
-        //TODO Implement
+        uint8_t *data = new uint8_t[len];
+        
+        this->write(&startReg, 1);
+        this->read(data, len);
+
+        for(int i=0;i<len;i++){
+            printf("%02X = %02X\n", startReg + i, *(data + i));
+        }
     }
     
 };

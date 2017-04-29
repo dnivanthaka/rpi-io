@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-#define I2C_0 "i2c-0"
-#define I2C_1 "i2c-1"
+#define I2C_0 0 
+#define I2C_1 1
 
 namespace rpiIO{
     class I2CDevice{

@@ -1,12 +1,32 @@
-#include <iostream>
+#include <cstdio>
+
 
 #include "I2CDevice.h"
+#include "SPIDevice.h"
 
 using namespace rpiIO;
 
 int main(void)
 {
-    I2CDevice dev(0, 0x00);
+    uint8_t data[] = {0xFF, 0x00, 0xF0, 0x0F};
+	uint8_t resp[4] = {0,};
+
+    I2CDevice dev(1, 0x20);
+	SPIDevice devs(0,0);
+
+    /*for(int i=0;i<4;i++){
+        dev.write(&data[i], 1);
+        dev.read(&resp, 1);
+
+        printf("%02X\n", resp);
+    }*/
+
+    //dev.dumpRegisters(0x00, 4);
+
+	devs.transfer(data, resp, 4);
+    for(int i=0;i<4;i++){
+	    printf("%02X\n", resp[i]);
+    }
 
     return 0;
 }
