@@ -11,7 +11,7 @@ int main(void)
     uint8_t data[] = {0xFF, 0x00, 0xF0, 0x0F};
 	uint8_t resp[4] = {0,};
 
-    I2CDevice dev(1, 0x20);
+    //I2CDevice dev(1, 0x20);
 	SPIDevice devs(0,0);
 
     /*for(int i=0;i<4;i++){

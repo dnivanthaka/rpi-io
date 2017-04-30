@@ -13,7 +13,7 @@
 #include "SPIDevice.h"
 
 namespace rpiIO{
-    SPIDevice::SPIDevice(uint8_t bus, uint8_t dev, uint8_t mode, uint8_t bits, uint32_t speed, uint16_t delay)
+    SPIDevice::SPIDevice(uint8_t bus, uint8_t dev, SPIMODE mode, uint8_t bits, uint32_t speed, uint16_t delay)
     {
         this->isOpen = false;
         this->mode = mode;
