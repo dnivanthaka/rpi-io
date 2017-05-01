@@ -97,7 +97,7 @@ namespace rpiIO{
         int ret;
         struct spi_ioc_transfer tr; 
 
-
+		/*Fill up all the values in the structure or there would be runtime errors, assign values to 0, so that it would use the already set values above when connecting*/
         tr.tx_buf = (unsigned long)tx,
         tr.rx_buf = (unsigned long)rx,
         tr.len    = len,
