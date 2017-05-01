@@ -1,6 +1,8 @@
 #ifndef GPIODEVICE_H
 #define GPIODEVICE_H
 
+#include <stdint.h>
+
 // References
 // http://elinux.org/RPi_GPIO_Code_Samples
 
@@ -29,13 +31,51 @@
 namespace rpiIO{
     class GPIODevice{
         public:
+			enum GPIOPIN{
+					GPIO_0 = 0,
+					GPIO_1 = 1,
+					GPIO_2 = 2,
+					GPIO_3 = 3,
+					GPIO_4 = 4,
+					GPIO_5 = 5,
+					GPIO_6 = 6,
+					GPIO_7 = 7,
+					GPIO_8 = 8,
+					GPIO_9 = 9,
+					GPIO_10 = 10,
+					GPIO_11 = 11,
+					GPIO_12 = 12,
+					GPIO_13 = 13,
+					GPIO_14 = 14,
+					GPIO_15 = 15,
+					GPIO_16 = 16,
+					GPIO_17 = 17,
+					GPIO_18 = 18,
+					GPIO_19 = 19,
+					GPIO_20 = 20,
+					GPIO_21 = 21,
+					GPIO_22 = 22,
+					GPIO_23 = 23,
+					GPIO_24 = 24,
+					GPIO_25 = 25,
+					GPIO_26 = 26,
+					GPIO_27 = 27
+			};
+			enum GPIOMODE {
+					OUT = 0,
+					IN  = 1,
+					ALT = 2
+			};
             GPIODevice();
             ~GPIODevice();
-            int setup();
+            //TODO Add Alt modes
+            int setup(GPIOPIN pin, GPIOMODE mode);
+            int get(GPIOPIN pin);
+            int set(GPIOPIN pin, uint8_t val);
         private:
-            int devFD;
             void *gpio_map;
             volatile uint32_t *gpio;
     };
 };
+
 #endif
