@@ -50,7 +50,7 @@ namespace rpiIO{
             ::close(devFile);
     }
     
-    int I2CDevice::read(uint8_t *buff, uint16_t len)
+    int I2CDevice::read(uint8_t *buff, int len)
     {
         int count;
         
@@ -62,7 +62,7 @@ namespace rpiIO{
         return 0;
     }
     
-    int I2CDevice::write(uint8_t *buff, uint16_t len)
+    int I2CDevice::write(uint8_t *buff, int len)
     {
         int count;
         
@@ -93,14 +93,20 @@ namespace rpiIO{
     int I2CDevice::write8Register(uint8_t *buff, uint8_t reg)
     {
         int ret = 0;
+        uint8_t tmp[2] = {reg, *buff};
         
-        if((ret = this->write(&reg)) != 0){
+        /*if((ret = this->write(&reg)) != 0){
             return ret;
         }
         
         if((ret = this->write(buff)) != 0){
             return ret;
+        }*/
+        
+        if((ret = this->write(tmp, 2)) != 0){
+            return ret;
         }
+        
         
         return ret;
     }
@@ -127,24 +133,24 @@ namespace rpiIO{
     int I2CDevice::write16Register(uint16_t *buff, uint8_t reg)
     {
         int ret = 0;
-        uint8_t tmp[2] = {0, 0};
+        uint8_t tmp[3] = {reg, 0, 0};
         
         //High byte first
-        tmp[0] = (*buff) & 0xFF00 >> 8;
-        tmp[1] = (*buff) & 0x00FF;
+        tmp[1] = (*buff) & 0xFF00 >> 8;
+        tmp[2] = (*buff) & 0x00FF;
         
-        if((ret = this->write(&reg)) != 0){
+        /*if((ret = this->write(&reg)) != 0){
             return ret;
-        }
+        }*/
         
-        if((ret = this->write(tmp, 2)) != 0){
+        if((ret = this->write(tmp, 3)) != 0){
             return ret;
         }
         
         return ret;
     }
     
-    void I2CDevice::dumpRegisters(uint8_t startReg, uint16_t len)
+    void I2CDevice::dumpRegisters(uint8_t startReg, int len)
     {
         uint8_t *data = new uint8_t[len];
         
