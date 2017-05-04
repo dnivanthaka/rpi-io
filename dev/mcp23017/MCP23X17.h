@@ -5,6 +5,9 @@
 
 #include "../../I2CDevice.h"
 #include "../../SPIDevice.h"
+// Reset pin could also be controlled
+
+using namespace rpiIO;
 
 //BANK 0 Registers list
 #define MCP23X17_IODIRA   0x00
@@ -32,17 +35,33 @@
 
 class MCP23X17{
     public:
-        MCP23X17(I2CDevice dev);
-        MCP23X17(SPIDevice dev, uint8_t addr);
+        enum ACCESSMODE{
+            SEQ  = 0,
+            BYTE = 1
+        };
+        MCP23X17(I2CDevice *dev, uint8_t addr);
+        MCP23X17(SPIDevice *dev, uint8_t addr);
         ~MCP23X17();
-        setbank();
-        setpolarity();
-        setdirection();
-        setvalue();
-        getvalue();
-        setinterrupt();
-        setinterrupcond();
-
+        //setbank(uint8_t bank);
+        void invertPolarity(uint8_t port, uint8_t val);
+        void setdirection(uint8_t port, uint8_t val);
+        uint8_t getdirection(uint8_t port);
+        void setvalue(uint8_t port, uint8_t val);
+        uint8_t getvalue(uint8_t port);
+        void setAccessMode(ACCESSMODE mode);
+        //setinterrupt();
+        //setinterrupcond();
+        
+     private:
+        void resetRegs();
+        I2CDevice *idev;
+        SPIDevice *sdev;
+        
+        //Addr + regs
+        uint8_t regs[22];
+        
+        uint8_t access_mode;
+        uint8_t current_reg;
 };
 
 #endif

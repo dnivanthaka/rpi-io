@@ -5,6 +5,8 @@
 
 #include "../../I2CDevice.h"
 
+#include "MCP23X17.h"
+
 #define MCP23017_ADDR 0x20
 
 using namespace rpiIO;
