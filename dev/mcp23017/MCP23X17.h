@@ -58,7 +58,7 @@ class MCP23X17{
         SPIDevice *sdev;
         
         //Addr + regs
-        uint8_t regs[22];
+        uint8_t *regs;
         
         uint8_t access_mode;
         uint8_t current_reg;

@@ -22,14 +22,18 @@ int main(void)
 
     I2CDevice pDev(I2C_1, MCP23017_ADDR);
     pDev.dumpRegisters(0x00, 22);
+    pDev.dumpRegisters(0x00, 22);
+    MCP23X17 mcp(&pDev, MCP23017_ADDR);
+    usleep(10000);
+    pDev.dumpRegisters(0x00, 22);
 
     //Setting PORTA as output
     cmd = 0;
     int pat = 0;
     uint8_t led1, led2;
     uint32_t delay;
-    pDev.write8Register(&cmd, 0);
-    while(1){
+    //pDev.write8Register(&cmd, 0);
+    /*while(1){
          if(pat == sizeof(pattern) / sizeof(pattern[0]))
              pat = 0;
          led1 = pattern[pat][0];
@@ -50,7 +54,7 @@ int main(void)
         //pDev.write8Register(&cmd, 0x12);
 
         //sleep(1);
-    }
+    }*/
     pDev.close();
 
     return 0;

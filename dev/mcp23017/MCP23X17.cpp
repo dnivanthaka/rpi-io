@@ -1,6 +1,7 @@
 //Compile with g++ main.cpp MCP23X17.cpp ../../I2CDevice.cpp ../../SPIDevice.cpp
 #include <stdint.h>
 #include <iostream>
+#include <cstdio>
 
 #include "../../I2CDevice.h"
 #include "../../SPIDevice.h"
@@ -12,7 +13,8 @@ using namespace rpiIO;
 
 MCP23X17::MCP23X17(I2CDevice *dev, uint8_t addr)
 {
-    regs = {0};
+    //regs = {0,};
+    regs = new uint8_t[23];
     idev  = dev;
     
     //Write the address in to first element of the regs, this is reqired in SPI transfers
@@ -24,7 +26,8 @@ MCP23X17::MCP23X17(I2CDevice *dev, uint8_t addr)
 
 MCP23X17::MCP23X17(SPIDevice *dev, uint8_t addr)
 {
-    regs = {0};
+    //regs = {0,};
+    regs = new uint8_t[22];
     sdev = dev;
     //This is reqired in SPI transfers
     regs[0] = addr;
@@ -33,21 +36,32 @@ MCP23X17::MCP23X17(SPIDevice *dev, uint8_t addr)
     this->resetRegs();
 }
 
+MCP23X17::~MCP23X17()
+{
+   delete regs; 
+}
+
 
 void MCP23X17::resetRegs()
 {
     uint8_t tmp[22];
 
-    regs[MCP23X17_IODIRA + 1] = 0xFF;
-    regs[MCP23X17_IODIRB + 1] = 0xFF;
+    regs[1] = MCP23X17_IODIRA;
+    regs[2] = 0xFF;
+    regs[3] = 0xFF;
     
     for(int i = MCP23X17_IPOLA;i<=MCP23X17_OLATB;i++){
-        regs[i+1] = 0;
+        regs[i+2] = 0;
+    }
+    
+    for(int i=0;i<22;i++){
+        printf("%02X, ", regs[i]);
     }
     
     if(idev != NULL){
         //I2CDevice
-        idev->write(&regs[1], 21);
+        //First write to register 0 to start sequential write
+        idev->write(&regs[1], 22);
     }else if(sdev != NULL){
         //SPIDevice
         sdev->transfer(regs, tmp, 22);
