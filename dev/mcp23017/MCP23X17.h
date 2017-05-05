@@ -43,12 +43,14 @@ class MCP23X17{
         MCP23X17(SPIDevice *dev, uint8_t addr);
         ~MCP23X17();
         //setbank(uint8_t bank);
-        void invertPolarity(uint8_t port, uint8_t val);
-        void setdirection(uint8_t port, uint8_t val);
-        uint8_t getdirection(uint8_t port);
-        void setvalue(uint8_t port, uint8_t val);
-        uint8_t getvalue(uint8_t port);
+        //void invertPolarity(uint8_t port, uint8_t val);
+        //void setdirection(uint8_t port, uint8_t val);
+        //uint8_t getdirection(uint8_t port);
+        //void setvalue(uint8_t port, uint8_t val);
+        //uint8_t getvalue(uint8_t port);
         void setAccessMode(ACCESSMODE mode);
+        uint8_t setRegister(uint8_t reg, uint8_t val);
+        uint8_t getRegister(uint8_t reg);
         //setinterrupt();
         //setinterrupcond();
         
@@ -56,6 +58,7 @@ class MCP23X17{
         void resetRegs();
         I2CDevice *idev;
         SPIDevice *sdev;
+        uint8_t saddr;
         
         //Addr + regs
         uint8_t *regs;
