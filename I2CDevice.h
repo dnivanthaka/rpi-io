@@ -17,8 +17,8 @@ namespace rpiIO{
             virtual int write(uint8_t *buff, int len = 1);
             virtual int read8Register(uint8_t *buff, uint8_t reg);
             virtual int write8Register(uint8_t *buff, uint8_t reg);
-            virtual int read16Register(uint16_t *buff, uint8_t reg);
-            virtual int write16Register(uint16_t *buff, uint8_t reg);
+            virtual int read16Register(uint16_t *buff, uint8_t reg, bool invert = false);
+            virtual int write16Register(uint16_t *buff, uint8_t reg, bool invert = false);
             /*virtual int readRegisters();*/
             virtual void dumpRegisters(uint8_t startReg, int len);
          private:

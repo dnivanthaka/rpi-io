@@ -26,6 +26,8 @@ int main(void)
     MCP23X17 mcp(&pDev, MCP23017_ADDR);
     usleep(10000);
     pDev.dumpRegisters(0x00, 22);
+    mcp.setDirection(MCP23X17::PORTA, 0x00);
+    mcp.setPortValue(MCP23X17::PORTA, 0x02);
 
     //Setting PORTA as output
     cmd = 0;

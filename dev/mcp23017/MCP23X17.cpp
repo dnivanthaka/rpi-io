@@ -8,34 +8,51 @@
 
 #include "MCP23X17.h"
 
+//BANK 0 Registers list
+#define MCP23X17_IODIRA   0x00
+#define MCP23X17_IODIRB   0x01
+#define MCP23X17_IPOLA    0x02
+#define MCP23X17_IPOLB    0x03
+#define MCP23X17_GPINTENA 0x04
+#define MCP23X17_GPINTENB 0x05
+#define MCP23X17_DEFVALA  0x06
+#define MCP23X17_DEFVALB  0x07
+#define MCP23X17_INTCONA  0x08
+#define MCP23X17_INTCONB  0x09
+#define MCP23X17_IOCON_1  0x0A
+#define MCP23X17_IOCON_2  0x0B
+#define MCP23X17_GPPUA    0x0C
+#define MCP23X17_GPPUB    0x0D
+#define MCP23X17_INTFA    0x0E
+#define MCP23X17_INTFB    0x0F
+#define MCP23X17_INTCAPA  0x10
+#define MCP23X17_INTCAPB  0x11
+#define MCP23X17_GPIOA    0x12
+#define MCP23X17_GPIOB    0x13
+#define MCP23X17_OLATA    0x14
+#define MCP23X17_OLATB    0x15
+
 using namespace std;
 using namespace rpiIO;
 
 MCP23X17::MCP23X17(I2CDevice *dev, uint8_t addr)
 {
-    //regs = {0,};
-    //regs = new uint8_t[23];
-    sdev  = dev;
     idev  = dev;
     
     //Write the address in to first element of the regs, this is reqired in SPI transfers
     //regs[0] = addr;
     sdev  = NULL;
     
-    this->resetRegs();
+    this->readConfigRegs();
 }
 
 MCP23X17::MCP23X17(SPIDevice *dev, uint8_t addr)
 {
-    //regs = {0,};
-    //regs = new uint8_t[22];
     sdev  = dev;
     saddr = addr;
-    //This is reqired in SPI transfers
-    //regs[0] = addr;
     idev = NULL;
     
-    this->resetRegs();
+    this->readConfigRegs();
 }
 
 MCP23X17::~MCP23X17()
@@ -44,6 +61,7 @@ MCP23X17::~MCP23X17()
 }
 
 
+/*
 void MCP23X17::resetRegs()
 {
     uint8_t tmp[23];
@@ -72,7 +90,7 @@ void MCP23X17::resetRegs()
     
     access_mode = SEQ;
     current_reg = 0;
-}
+}*/
 
 /*void MCP23X17::setdirection(uint8_t port, uint8_t val)
 {
@@ -152,11 +170,11 @@ uint8_t MCP23X17::getRegister(uint8_t reg)
         val = resp[0];
     }
     
-    regs[port + 1] = val;
+    //regs[port + 1] = val;
     return val;
 }
 
-void MCP23X17::setRegister(uint8_t reg, uint8_t val)
+uint8_t MCP23X17::setRegister(uint8_t reg, uint8_t val)
 {
     if(idev != NULL){
         //I2CDevice
@@ -179,10 +197,86 @@ void MCP23X17::setRegister(uint8_t reg, uint8_t val)
     }
     
     //regs[port + 1] = val;
+    return 0;
 }
 
-void MCP23X17::setAccessMode(ACCESSMODE mode)
+/*void MCP23X17::setAccessMode(ACCESSMODE mode)
 {
     access_mode = mode;
+}*/
+
+void MCP23X17::readConfigRegs()
+{
+    configReg[0] = this->getRegister(MCP23X17_IOCON_1);
+    configReg[1] = this->getRegister(MCP23X17_IOCON_2);
+
+    intConfig[0] = this->getRegister(MCP23X17_INTCONA);
+    intConfig[1] = this->getRegister(MCP23X17_INTCONB);
+
+    iocConfig[0] = this->getRegister(MCP23X17_GPINTENA);
+    iocConfig[1] = this->getRegister(MCP23X17_GPINTENB);
+
+    pullupConfig[0] = this->getRegister(MCP23X17_GPPUA);
+    pullupConfig[1] = this->getRegister(MCP23X17_GPPUB);
+}
+
+void MCP23X17::setBank(uint8_t bank)
+{
+
+}
+
+void MCP23X17::invertPolarity(MCP23X17::PORT port, uint8_t val)
+{
+    if(port == PORTA){
+        this->setRegister(MCP23X17_IPOLA, val);
+    }else{
+        this->setRegister(MCP23X17_IPOLB, val);
+    }
+}
+
+void MCP23X17::setDirection(MCP23X17::PORT port, uint8_t val)
+{
+    if(port == PORTA){
+        this->setRegister(MCP23X17_IODIRA, val);
+    }else{
+        this->setRegister(MCP23X17_IODIRB, val);
+    }
+}
+
+void MCP23X17::setPortValue(MCP23X17::PORT port, uint8_t val)
+{
+    if(port == PORTA){
+        this->setRegister(MCP23X17_OLATA, val);
+    }else{
+        this->setRegister(MCP23X17_OLATB, val);
+    }
+}
+
+uint8_t MCP23X17::getPortValue(MCP23X17::PORT port)
+{
+    uint8_t val = 0;
+
+    if(port == PORTA){
+        val = this->getRegister(MCP23X17_GPIOA);
+    }else{
+        val = this->getRegister(MCP23X17_GPIOB);
+    }
+
+    return val;
+}
+
+void MCP23X17::setPullups(MCP23X17::PORT port, uint8_t val)
+{
+
+} 
+
+void MCP23X17::setConfiguration(uint8_t val)
+{
+    this->setRegister(MCP23X17_IOCON_1, val);
+}
+
+uint8_t MCP23X17::getConfiguration()
+{
+
 }
 

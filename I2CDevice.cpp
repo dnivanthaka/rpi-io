@@ -111,7 +111,7 @@ namespace rpiIO{
         return ret;
     }
     
-    int I2CDevice::read16Register(uint16_t *buff, uint8_t reg)
+    int I2CDevice::read16Register(uint16_t *buff, uint8_t reg, bool invert)
     {
         int ret = 0;
         uint8_t tmp[2] = {0, 0};
@@ -124,20 +124,30 @@ namespace rpiIO{
             return ret;
         }
         
-        //High byte first
-        *buff = tmp[0] << 8 | tmp[1];
-        
+        if(!invert){
+			//High byte first
+			*buff = tmp[0] << 8 | tmp[1];
+		}else{
+			//Low byte first
+			*buff = tmp[1] << 8 | tmp[0];
+		}
         return ret;
     }
     
-    int I2CDevice::write16Register(uint16_t *buff, uint8_t reg)
+    int I2CDevice::write16Register(uint16_t *buff, uint8_t reg, bool invert)
     {
         int ret = 0;
         uint8_t tmp[3] = {reg, 0, 0};
         
-        //High byte first
-        tmp[1] = (*buff) & 0xFF00 >> 8;
-        tmp[2] = (*buff) & 0x00FF;
+        if(!invert){
+			//High byte first
+			tmp[1] = (*buff) & 0xFF00 >> 8;
+			tmp[2] = (*buff) & 0x00FF;
+		}else{
+			//Low byte first
+			tmp[1] = (*buff) & 0x00FF;
+			tmp[2] = (*buff) & 0xFF00 >> 8;
+		}
         
         /*if((ret = this->write(&reg)) != 0){
             return ret;
