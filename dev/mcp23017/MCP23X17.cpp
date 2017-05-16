@@ -222,7 +222,11 @@ void MCP23X17::readConfigRegs()
 
 void MCP23X17::setBank(uint8_t bank)
 {
+    configReg[0] = (configReg[0] & 0x7F) | bank << 7;
+    configReg[1] = configReg[0];
 
+    this->setRegister(MCP23X17_IOCON_1, configReg[0]);
+    this->setRegister(MCP23X17_IOCON_1, configReg[1]);
 }
 
 void MCP23X17::invertPolarity(MCP23X17::PORT port, uint8_t val)
@@ -265,18 +269,29 @@ uint8_t MCP23X17::getPortValue(MCP23X17::PORT port)
     return val;
 }
 
+// Sets the internal pull-ups on or off, works only if the pins are configured as inputs
 void MCP23X17::setPullups(MCP23X17::PORT port, uint8_t val)
 {
-
+    if(port == PORTA){
+        this->setRegister(MCP23X17_GPPUA, val);
+        pullupConfig[0] = val;
+    }else{
+        this->setRegister(MCP23X17_GPPUB, val);
+        pullupConfig[1] = val;
+    }
 } 
 
 void MCP23X17::setConfiguration(uint8_t val)
 {
     this->setRegister(MCP23X17_IOCON_1, val);
+    this->setRegister(MCP23X17_IOCON_2, val);
+    
+    configReg[0] = val;
+    configReg[1] = val;
 }
 
 uint8_t MCP23X17::getConfiguration()
 {
-
+    return configReg[0];
 }
 
