@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <cstdlib>
 #include <unistd.h>
+#include <cstdio>
 
 #include "../../I2CDevice.h"
 
@@ -21,19 +22,31 @@ int main(void)
     uint8_t cmd, data[2] = {0,};
 
     I2CDevice pDev(I2C_1, MCP23017_ADDR);
-    pDev.dumpRegisters(0x00, 22);
-    pDev.dumpRegisters(0x00, 22);
+    //pDev.dumpRegisters(0x00, 22);
+    //pDev.dumpRegisters(0x00, 22);
     MCP23X17 mcp(&pDev, MCP23017_ADDR);
     usleep(10000);
-    pDev.dumpRegisters(0x00, 22);
+    //pDev.dumpRegisters(0x00, 22);
     mcp.setDirection(MCP23X17::PORTA, 0x00);
     mcp.setPortValue(MCP23X17::PORTA, 0x02);
 
     //Setting PORTA as output
     cmd = 0;
     int pat = 0;
-    uint8_t led1, led2;
+    uint8_t tmp;
     uint32_t delay;
+
+    //Setting up for input
+    mcp.setDirection(MCP23X17::PORTA, 0x04);
+    mcp.setPullupsConf(MCP23X17::PORTA, 0x40);
+
+    while(1){
+        tmp = mcp.getPortValue(MCP23X17::PORTA);
+        printf("%d\n", tmp);
+        //std::cout << tmp << std::endl;
+
+        sleep(1);
+    }
     //pDev.write8Register(&cmd, 0);
     /*while(1){
          if(pat == sizeof(pattern) / sizeof(pattern[0]))

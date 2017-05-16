@@ -42,7 +42,8 @@ MCP23X17::MCP23X17(I2CDevice *dev, uint8_t addr)
     //Write the address in to first element of the regs, this is reqired in SPI transfers
     //regs[0] = addr;
     sdev  = NULL;
-    
+   
+    this->resetRegs();
     this->readConfigRegs();
 }
 
@@ -51,7 +52,8 @@ MCP23X17::MCP23X17(SPIDevice *dev, uint8_t addr)
     sdev  = dev;
     saddr = addr;
     idev = NULL;
-    
+ 
+    this->resetRegs();
     this->readConfigRegs();
 }
 
@@ -61,7 +63,6 @@ MCP23X17::~MCP23X17()
 }
 
 
-/*
 void MCP23X17::resetRegs()
 {
     uint8_t tmp[23];
@@ -75,9 +76,9 @@ void MCP23X17::resetRegs()
         tmp[i+2] = 0;
     }
     
-    for(int i=0;i<22;i++){
+    /*for(int i=0;i<22;i++){
         printf("%02X, ", tmp[i]);
-    }
+    }*/
     
     if(idev != NULL){
         //I2CDevice
@@ -88,9 +89,9 @@ void MCP23X17::resetRegs()
         sdev->transfer(tmp, tmp, 23);
     }
     
-    access_mode = SEQ;
-    current_reg = 0;
-}*/
+    //access_mode = SEQ;
+    //current_reg = 0;
+}
 
 uint8_t MCP23X17::getRegister(uint8_t reg)
 {
@@ -200,7 +201,7 @@ void MCP23X17::setDirection(MCP23X17::PORT port, uint8_t val)
     }
 }
 
-void MCP23X17::getDirection(MCP23X17::PORT port)
+uint8_t MCP23X17::getDirection(MCP23X17::PORT port)
 {
     return portDir[port];
 }

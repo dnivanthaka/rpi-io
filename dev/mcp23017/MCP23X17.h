@@ -25,15 +25,18 @@ class MCP23X17{
         void setBank(uint8_t bank);
         void invertPolarity(MCP23X17::PORT port, uint8_t val);
         void setDirection(MCP23X17::PORT port, uint8_t val);
+        uint8_t getDirection(MCP23X17::PORT port);
         void setPortValue(MCP23X17::PORT port, uint8_t val);
         uint8_t getPortValue(MCP23X17::PORT port);
         void setPullupsConf(MCP23X17::PORT port, uint8_t val);
-        void getPullupsConf(MCP23X17::PORT port);
+        uint8_t getPullupsConf(MCP23X17::PORT port);
         void setConfiguration(uint8_t val);
         uint8_t getConfiguration();
+        void setInterruptConfig(bool onPinChange, uint8_t defaultVal);
         
      private:
         void readConfigRegs();
+        void resetRegs();
         uint8_t setRegister(uint8_t reg, uint8_t val);
         uint8_t getRegister(uint8_t reg);
         I2CDevice *idev;
