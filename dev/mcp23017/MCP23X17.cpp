@@ -92,60 +92,6 @@ void MCP23X17::resetRegs()
     current_reg = 0;
 }*/
 
-/*void MCP23X17::setdirection(uint8_t port, uint8_t val)
-{
-    if(idev != NULL){
-        //I2CDevice
-        if(idev->write8Register(&val, port) != 0){
-            cerr << "Setting port direction failed" << endl;
-            return;
-        }
-    }else if(sdev != NULL){
-        //SPIDevice
-        uint8_t spi_message[3];
-        spi_message[0] = saddr;
-        spi_message[1] = port;
-        spi_message[2] = val;
-        
-        
-        if(sdev->transfer(spi_message, spi_message, 3) != 0){
-            cerr << "Setting port direction failed" << endl;
-            return;
-        }
-    }
-    
-    //regs[port + 1] = val;
-}*/
-
-/*uint8_t MCP23X17::getdirection(uint8_t port)
-{
-    uint8_t val;
-    //We dont read the actual register here, assuming we are the only ones modifying the device
-    //return regs[port + 1];
-    if(idev != NULL){
-        //I2CDevice
-        if(idev->read8Register(&val, port) != 0){
-            cerr << "Reading port direction failed" << endl;
-            return;
-        }
-    }else if(sdev != NULL){
-        //SPIDevice
-        uint8_t spi_message[2], resp[2];
-        spi_message[0] = saddr;
-        spi_message[1] = port;
-        
-        
-        if(sdev->transfer(spi_message, &resp, 2) != 0){
-            cerr << "Setting port direction failed" << endl;
-            return;
-        }
-        
-        val = resp[0];
-    }
-    
-    return val;
-}*/
-
 uint8_t MCP23X17::getRegister(uint8_t reg)
 {
     uint8_t val;
@@ -205,8 +151,13 @@ uint8_t MCP23X17::setRegister(uint8_t reg, uint8_t val)
     access_mode = mode;
 }*/
 
+
+//Reads the default configuration registers, PORTA first
 void MCP23X17::readConfigRegs()
 {
+    portDir[0] = this->getRegister(MCP23X17_IODIRA);
+    portDir[1] = this->getRegister(MCP23X17_IODIRB);
+    
     configReg[0] = this->getRegister(MCP23X17_IOCON_1);
     configReg[1] = this->getRegister(MCP23X17_IOCON_2);
 
@@ -242,9 +193,16 @@ void MCP23X17::setDirection(MCP23X17::PORT port, uint8_t val)
 {
     if(port == PORTA){
         this->setRegister(MCP23X17_IODIRA, val);
+        portDir[0] = val;
     }else{
         this->setRegister(MCP23X17_IODIRB, val);
+        portDir[1] = val;
     }
+}
+
+void MCP23X17::getDirection(MCP23X17::PORT port)
+{
+    return portDir[port];
 }
 
 void MCP23X17::setPortValue(MCP23X17::PORT port, uint8_t val)
@@ -270,7 +228,7 @@ uint8_t MCP23X17::getPortValue(MCP23X17::PORT port)
 }
 
 // Sets the internal pull-ups on or off, works only if the pins are configured as inputs
-void MCP23X17::setPullups(MCP23X17::PORT port, uint8_t val)
+void MCP23X17::setPullupsConf(MCP23X17::PORT port, uint8_t val)
 {
     if(port == PORTA){
         this->setRegister(MCP23X17_GPPUA, val);
@@ -279,7 +237,12 @@ void MCP23X17::setPullups(MCP23X17::PORT port, uint8_t val)
         this->setRegister(MCP23X17_GPPUB, val);
         pullupConfig[1] = val;
     }
-} 
+}
+
+uint8_t  MCP23X17::getPullupsConf(MCP23X17::PORT port)
+{
+    return pullupConfig[port];
+}
 
 void MCP23X17::setConfiguration(uint8_t val)
 {

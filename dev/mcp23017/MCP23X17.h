@@ -27,7 +27,8 @@ class MCP23X17{
         void setDirection(MCP23X17::PORT port, uint8_t val);
         void setPortValue(MCP23X17::PORT port, uint8_t val);
         uint8_t getPortValue(MCP23X17::PORT port);
-        void setPullups(MCP23X17::PORT port, uint8_t val);
+        void setPullupsConf(MCP23X17::PORT port, uint8_t val);
+        void getPullupsConf(MCP23X17::PORT port);
         void setConfiguration(uint8_t val);
         uint8_t getConfiguration();
         
@@ -47,6 +48,7 @@ class MCP23X17{
         uint8_t intConfig[2];
         uint8_t iocConfig[2];
         uint8_t pullupConfig[2];
+        uint8_t portDir[2];
 };
 
 #endif
