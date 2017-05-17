@@ -259,3 +259,50 @@ uint8_t MCP23X17::getConfiguration()
     return configReg[0];
 }
 
+
+void MCP23X17::setInterruptBehaviour(bool isMirrored = false, bool isOpenDrain = false, bool isActiveHigh = false)
+{
+    uint8_t val = configReg[0];
+    val = (val & 0xB9) | isMirrored << 6 | isOpenDrain << 2 | isActiveHigh << 1;
+    
+    this->setRegister(MCP23X17_IOCON_1, val);
+    this->setRegister(MCP23X17_IOCON_2, val);
+    
+    configReg[0] = val;
+    configReg[1] = val;
+}
+
+void MCP23X17::setInterruptConfig(MCP23X17::PORT port, uint8_t val)
+{
+    if(port == PORTA){
+        this->setRegister(MCP23X17_INTCONA, val);
+    }else{
+        this->setRegister(MCP23X17_INTCONB, val);
+    }
+}
+
+void MCP23X17::setInterruptConfig(MCP23X17::PORT port, uint8_t val, uint8_t defval)
+{
+    if(port == PORTA){
+        this->setRegister(MCP23X17_GPINTENA, val);
+        this->setRegister(MCP23X17_DEFVALA, defval);
+        this->setRegister(MCP23X17_INTCONA, val);
+    }else{
+        this->setRegister(MCP23X17_GPINTENB, val);
+        this->setRegister(MCP23X17_DEFVALB, defval);
+        this->setRegister(MCP23X17_INTCONB, val);
+    }
+}
+
+uint8_t MCP23X17::getInterruptState(MCP23X17::PORT port)
+{
+    uint8_t val;
+    
+    if(port == PORTA){
+        val = this->getRegister(MCP23X17_INTFA);
+    }else{
+        val = this->getRegister(MCP23X17_INTFB);
+    }
+    
+    return val;
+}

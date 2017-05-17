@@ -32,7 +32,11 @@ class MCP23X17{
         uint8_t getPullupsConf(MCP23X17::PORT port);
         void setConfiguration(uint8_t val);
         uint8_t getConfiguration();
-        void setInterruptConfig(bool onPinChange, uint8_t defaultVal);
+        //Interrupt control
+        void setInterruptBehaviour(bool isMirrored = false, bool isOpenDrain = false, bool isActiveHigh = false);
+        void setInterruptConfig(MCP23X17::PORT port, uint8_t val);
+        void setInterruptConfig(MCP23X17::PORT port, uint8_t val, uint8_t defval);
+        uint8_t getInterruptState(MCP23X17::PORT port);
         
      private:
         void readConfigRegs();
