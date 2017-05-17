@@ -38,11 +38,17 @@ int main(void)
 
     //Setting up for input
     mcp.setDirection(MCP23X17::PORTA, 0x04);
-    mcp.setPullupsConf(MCP23X17::PORTA, 0x40);
+    mcp.setPullupsConf(MCP23X17::PORTA, 0x04);
+    mcp.setInterruptBehaviour(false, false, true);
+    mcp.setInterruptConfig(MCP23X17::PORTA, 0x04, 0x04);
 
     while(1){
         tmp = mcp.getPortValue(MCP23X17::PORTA);
         printf("%d\n", tmp);
+        tmp = mcp.getInterruptState(MCP23X17::PORTA);
+        printf("%d\n", tmp);
+        printf("=======================\n", tmp);
+        pDev.dumpRegisters(0x00, 22);
         //std::cout << tmp << std::endl;
 
         sleep(1);

@@ -260,7 +260,7 @@ uint8_t MCP23X17::getConfiguration()
 }
 
 
-void MCP23X17::setInterruptBehaviour(bool isMirrored = false, bool isOpenDrain = false, bool isActiveHigh = false)
+void MCP23X17::setInterruptBehaviour(bool isMirrored, bool isOpenDrain, bool isActiveHigh)
 {
     uint8_t val = configReg[0];
     val = (val & 0xB9) | isMirrored << 6 | isOpenDrain << 2 | isActiveHigh << 1;
