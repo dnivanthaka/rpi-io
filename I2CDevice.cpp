@@ -167,9 +167,22 @@ namespace rpiIO{
         this->write(&startReg, 1);
         this->read(data, len);
 
-        for(int i=0;i<len;i++){
+        /*for(int i=0;i<len;i++){
             printf("%02X = %02X\n", startReg + i, *(data + i));
+        }*/
+        
+        
+        //Heading
+        for(int i=0;i<len;i++){
+            printf("[%02X]", startReg + i);
         }
+        printf("\n");
+        //Content
+        for(int i=0;i<len;i++){
+            printf("[%02X]", *(data + i));
+        }
+        printf("\n");
+        
     }
     
 };
