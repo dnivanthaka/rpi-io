@@ -46,7 +46,7 @@ namespace rpiIO{
 		munmap(gpio_map, BLOCK_SIZE);
 	}
 	
-	int GPIODevice::setup(GPIOPIN pin, GPIOMODE mode)
+	int GPIODevice::setup(GPIODevice::GPIOPIN pin, GPIODevice::GPIOMODE mode)
 	{
 		INP_GPIO(pin); // must use INP_GPIO before we can use OUT_GPIO
 		if(mode == OUT){
@@ -56,7 +56,7 @@ namespace rpiIO{
 		return 0;
 	}
 	
-	int GPIODevice::set(GPIOPIN pin, uint8_t val)
+	int GPIODevice::set(GPIODevice::GPIOPIN pin, uint8_t val)
 	{
 		if(val){
 			GPIO_SET = 1 << pin;
@@ -67,7 +67,7 @@ namespace rpiIO{
 		return 0;
 	}
 	
-	int GPIODevice::get(GPIOPIN pin)
+	int GPIODevice::get(GPIODevice::GPIOPIN pin)
 	{
 		return GET_GPIO(pin);
 	}

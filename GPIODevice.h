@@ -6,7 +6,7 @@
 // References
 // http://elinux.org/RPi_GPIO_Code_Samples
 
-#define BCM2708_PERI_BASE        0x20000000
+#define BCM2708_PERI_BASE        0x3F000000
 #define GPIO_BASE                (BCM2708_PERI_BASE + 0x200000) /* GPIO controller */
 
 #define PAGE_SIZE (4*1024)
@@ -69,9 +69,9 @@ namespace rpiIO{
             GPIODevice();
             ~GPIODevice();
             //TODO Add Alt modes
-            int setup(GPIOPIN pin, GPIOMODE mode);
-            int get(GPIOPIN pin);
-            int set(GPIOPIN pin, uint8_t val);
+            int setup(GPIODevice::GPIOPIN pin, GPIODevice::GPIOMODE mode);
+            int get(GPIODevice::GPIOPIN pin);
+            int set(GPIODevice::GPIOPIN pin, uint8_t val);
         private:
             void *gpio_map;
             volatile uint32_t *gpio;
