@@ -106,7 +106,8 @@ uint8_t MCP23X17::getRegister(uint8_t reg)
     }else if(sdev != NULL){
         //SPIDevice
         uint8_t spi_message[2], resp[2];
-        spi_message[0] = saddr;
+        // Reading = 0
+        spi_message[0] = saddr << 1 | 1;
         spi_message[1] = reg;
            
         if(sdev->transfer(spi_message, resp, 2) != 0){
@@ -120,7 +121,6 @@ uint8_t MCP23X17::getRegister(uint8_t reg)
     //regs[port + 1] = val;
     return val;
 }
-
 uint8_t MCP23X17::setRegister(uint8_t reg, uint8_t val)
 {
     if(idev != NULL){
@@ -132,7 +132,8 @@ uint8_t MCP23X17::setRegister(uint8_t reg, uint8_t val)
     }else if(sdev != NULL){
         //SPIDevice
         uint8_t spi_message[3];
-        spi_message[0] = saddr;
+        // Writing = 0
+        spi_message[0] = saddr << 1;
         spi_message[1] = reg;
         spi_message[2] = val;
         

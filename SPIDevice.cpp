@@ -101,9 +101,9 @@ namespace rpiIO{
         tr.tx_buf = (unsigned long)tx,
         tr.rx_buf = (unsigned long)rx,
         tr.len    = len,
-        tr.delay_usecs   = 0,
-        tr.speed_hz      = 0,
-        tr.bits_per_word = 0,
+        tr.delay_usecs   = this->delay,
+        tr.speed_hz      = this->speed,
+        tr.bits_per_word = this->bits,
         tr.pad           = 0;
         tr.cs_change     = 0;
         tr.tx_nbits      = 0;
