@@ -4,6 +4,9 @@
 #include <stdint.h>
 
 #include "../../SPIDevice.h" 
+#include "../../GPIODevice.h"
+
+using namespace rpiIO;
 
 class PCD8544 : protected SPIDevice{
     public:
@@ -13,5 +16,7 @@ class PCD8544 : protected SPIDevice{
         uint8_t init();
         uint8_t clear();
         uint8_t reset();
+
+        GPIODevice *rst, *dc;
 };
 #endif
