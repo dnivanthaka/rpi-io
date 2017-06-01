@@ -12,10 +12,13 @@ class PCD8544 : protected SPIDevice{
     public:
         PCD8544();
         ~PCD8544();
-    private:
-        uint8_t init();
         uint8_t clear();
         uint8_t reset();
+        uint8_t invertDisplay();
+        uint8_t normalDisplay();
+        uint8_t setContrast(uint8_t con);
+    private:
+        uint8_t init();
 
         GPIODevice *rst, *dc;
 };
