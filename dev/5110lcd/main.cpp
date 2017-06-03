@@ -7,9 +7,18 @@
 int main(void)
 {
     PCD8544 lcd;
-    lcd.invertDisplay();
-    sleep(2);
+    //lcd.invertDisplay();
+    //lcd.normalDisplay();
+    //sleep(2);
     //lcd.setContrast(0x0F);
+    lcd.clear();
+    for(int i=0;i<48;i++){
+        for(int j=0;j<84;j++){
+            lcd.setPixel(j,i,0);
+            //lcd.updateScreen();
+        }
+    }
+    lcd.updateScreen();
 
 
     return 0;

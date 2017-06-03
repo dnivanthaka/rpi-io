@@ -4,26 +4,34 @@
 
 #include "PCD8544.h"
 
-#define COMMAND dc->set(GPIODevice::GPIO_17, 0);
-#define DATA    dc->set(GPIODevice::GPIO_17, 1);
+#define GPIO_RST GPIODevice::GPIO_4
+#define GPIO_DC  GPIODevice::GPIO_17
+
+#define COMMAND dc->set(GPIO_DC, 0);
+#define DATA    dc->set(GPIO_DC, 1);
+
+#define FB_SIZE ((48 * 84) / 8)
 
 using namespace rpiIO;
 
 PCD8544::PCD8544() : SPIDevice(0, 0, SPIDevice::MODE3, 8, 4000000, 0)
 {
+    fb = new uint8_t[FB_SIZE];
+
     rst = new GPIODevice();
     dc  = new GPIODevice();
 
-    rst->setup(GPIODevice::GPIO_4, GPIODevice::OUT);
-    dc->setup(GPIODevice::GPIO_17, GPIODevice::OUT);
-    rst->set(GPIODevice::GPIO_4, 1);
-    dc->set(GPIODevice::GPIO_17, 1);
+    rst->setup(GPIO_RST, GPIODevice::OUT);
+    dc->setup(GPIO_DC, GPIODevice::OUT);
+    rst->set(GPIO_RST, 1);
+    dc->set(GPIO_DC, 1);
 
     this->init();
 }
 
 PCD8544::~PCD8544()
 {
+    delete fb;
     delete rst;
     delete dc;
 }
@@ -38,7 +46,7 @@ uint8_t PCD8544::init()
     tx = 0x21;
     COMMAND
     transfer(&tx, &rx, 1);
-    tx = 0xCF;
+    tx = 0xDF;
     transfer(&tx, &rx, 1);
     tx = 0x04 + 0x02;
     transfer(&tx, &rx, 1);
@@ -109,7 +117,7 @@ uint8_t PCD8544::clear()
 
     //tx = {0};
 
-    for(int j=0;j<7;j++){
+    for(int j=0;j<6;j++){
         //Setting x
         COMMAND
         tx[0] = 0x80;
@@ -118,10 +126,6 @@ uint8_t PCD8544::clear()
         tx[0] = 0x40 | j;
         transfer(&tx[0], &rx[0], 1);
         DATA
-        /*for(int i=0;i<84;i++){
-            tx=0x00;
-            transfer(&tx, &rx, 1);
-        }*/
         tx[0] = 0;
         transfer(tx, rx, 84);
 
@@ -132,11 +136,40 @@ uint8_t PCD8544::clear()
 
 uint8_t PCD8544::reset()
 {
-    rst->set(GPIODevice::GPIO_4, 1);
+    rst->set(GPIO_RST, 1);
     usleep(100000);
-    rst->set(GPIODevice::GPIO_4, 0);
+    rst->set(GPIO_RST, 0);
     usleep(100000);
-    rst->set(GPIODevice::GPIO_4, 1);
+    rst->set(GPIO_RST, 1);
+
+    return 0;
+}
+
+uint8_t PCD8544::updateScreen()
+{
+    uint8_t  tx, rx[84];
+
+    //tx = {0};
+
+    for(int j=0;j<6;j++){
+        //Setting x
+        COMMAND
+        tx = 0x80;
+        transfer(&tx, &rx[0], 1);
+        //Setting y
+        tx = 0x40 | j;
+        transfer(&tx, &rx[0], 1);
+        DATA
+        transfer(&fb[84 * j], rx, 84);
+
+    }
+
+    return 0;
+}
+
+uint8_t PCD8544::setPixel(uint8_t x, uint8_t y, uint8_t val)
+{
+    fb[(x % 84) + (84 * (y / 8))] |= 1 << (y % 8);
 
     return 0;
 }
