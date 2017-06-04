@@ -149,8 +149,6 @@ uint8_t PCD8544::updateScreen()
 {
     uint8_t  tx, rx[84];
 
-    //tx = {0};
-
     for(int j=0;j<6;j++){
         //Setting x
         COMMAND
@@ -161,7 +159,6 @@ uint8_t PCD8544::updateScreen()
         transfer(&tx, &rx[0], 1);
         DATA
         transfer(&fb[84 * j], rx, 84);
-
     }
 
     return 0;
@@ -169,7 +166,11 @@ uint8_t PCD8544::updateScreen()
 
 uint8_t PCD8544::setPixel(uint8_t x, uint8_t y, uint8_t val)
 {
-    fb[(x % 84) + (84 * (y / 8))] |= 1 << (y % 8);
+    if(val > 0){
+        fb[(x % 84) + (84 * (y / 8))] |= 1 << (y % 8);
+    }else{
+        fb[(x % 84) + (84 * (y / 8))] &= ~(1 << (y % 8));
+    }
 
     return 0;
 }

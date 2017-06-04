@@ -14,10 +14,11 @@ int main(void)
     lcd.clear();
     for(int i=0;i<48;i++){
         for(int j=0;j<84;j++){
-            lcd.setPixel(j,i,0);
+            lcd.setPixel(j,i,1);
             //lcd.updateScreen();
         }
     }
+    lcd.setPixel(2, 5, 0);
     lcd.updateScreen();
 
 
